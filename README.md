@@ -1,1 +1,1 @@
-# adc
+# Arctic Data Center Training
