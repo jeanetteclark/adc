@@ -32,3 +32,48 @@ catch_df <- read.csv(catch_url,
 head(catch_df)
 ```
 
+```{r}
+catch_df <- catch_df %>% 
+  select(-All, -notesRegCode)
+
+# select positvely by name
+# eg: select(Region, Year, Chinook,...)
+
+head(catch_df)
+```
+Move from wide to long format (using gather), and rename the catch column to reflect units.
+
+
+Reverse of gather is spread
+
+```{r}
+catch_df <- catch_df %>% 
+  gather(key = "species", value = "catch", -Region, -Year) %>% 
+  rename(catch_thousands = catch)
+
+head(catch_df)
+```
+
+```{r}
+catch_integers <- as.integer(catch_df$catch_thousands)
+
+i <- which(is.na(catch_integers) == T)
+
+catch_df$catch_thousands[i]
+```
+
+1) turn "I" into 1 in the catch_thousands column
+2) coerce catch_thousands into integer type
+3) convert catch_thousands to catch
+
+```{r}
+catch_df <- catch_df %>% 
+  mutate(catch_thousands = ifelse(catch_thousands == "I", 1, catch_thousands)) %>% 
+  mutate(catch_thousands = as.integer(catch_thousands)) %>% 
+  mutate(catch = catch_thousands * 1000)
+
+tail(catch_df)
+```
+
+
+
